@@ -1,0 +1,19 @@
+[project]
+name = "cards"
+version = "0.1.0"
+description = "Models a deck of cards"
+authors = [
+    {name = "hurley08", email = "intriqet@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pdm]
+distribution = true
