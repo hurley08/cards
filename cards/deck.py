@@ -3,72 +3,70 @@
 from dataclasses import dataclass 
 from cards.playing_card import suits, faces
 from cards.playing_card import PlayingCard
-from cards import cardExceptions
+from cardExceptions import *
 import random
 
 
-standard_deck = {
-
-	('Club', 'Two'): 2,
-	('Club', 'Three'): 3,
-	('Club', 'Four'): 4,
-	('Club', 'Five'): 5,
-	('Club', 'Six'): 6,
-	('Club', 'Seven'): 7,
-	('Club', 'Eight'): 8,
-	('Club', 'Nine'): 9,
-	('Club', 'Jack'): 10,
-	('Club', 'Queen'): 11,
-	('Club', 'King'): 12,
-	('Club', 'Ace'): 13,
-	('Diamond', 'Two'): 22,
-	('Diamond', 'Three'): 23,
-	('Diamond', 'Four'): 24,
-	('Diamond', 'Five'): 25,
-	('Diamond', 'Six'): 26,
-	('Diamond', 'Seven'): 27,
-	('Diamond', 'Eight'): 28,
-	('Diamond', 'Nine'): 29,
-	('Diamond', 'Jack'): 30,
-	('Diamond', 'Queen'): 31,
-	('Diamond', 'King'): 32,
-	('Diamond', 'Ace'): 33,
-	('Heart', 'Two'): 42,
-	('Heart', 'Three'): 43,
-	('Heart', 'Four'): 44,
-	('Heart', 'Five'): 45,
-	('Heart', 'Six'): 46,
-	('Heart', 'Seven'): 47,
-	('Heart', 'Eight'): 48,
-	('Heart', 'Nine'): 49,
-	('Heart', 'Jack'): 50,
-	('Heart', 'Queen'): 51,
-	('Heart', 'King'): 52,
-	('Heart', 'Ace'): 53,
-	('Spade', 'Two'): 62,
-	('Spade', 'Three'): 63,
-	('Spade', 'Four'): 64,
-	('Spade', 'Five'): 65,
-	('Spade', 'Six'): 66,
-	('Spade', 'Seven'): 67,
-	('Spade', 'Eight'): 68,
-	('Spade', 'Nine'): 69,
-	('Spade', 'Jack'): 70,
-	('Spade', 'Queen'): 71,
-	('Spade', 'King'): 72,
-	('Spade', 'Ace'): 73,
-
-
-}
-
-
-
-
+standard_deck = [
+		('Club', 'Two') ,
+		('Club', 'Three') ,
+		('Club', 'Four') ,
+		('Club', 'Five') ,
+		('Club', 'Six') ,
+		('Club', 'Seven') ,
+		('Club', 'Eight') ,
+		('Club', 'Nine') ,
+		('Club', 'Ten') ,
+		('Club', 'Jack') ,
+		('Club', 'Queen') ,
+		('Club', 'King') ,
+		('Club', 'Ace') ,
+		('Diamond', 'Two') ,
+		('Diamond', 'Three') ,
+		('Diamond', 'Four') ,
+		('Diamond', 'Five') ,
+		('Diamond', 'Six') ,
+		('Diamond', 'Seven') ,
+		('Diamond', 'Eight') ,
+		('Diamond', 'Nine') ,
+		('Diamond', 'Ten') ,
+		('Diamond', 'Jack') ,
+		('Diamond', 'Queen') ,
+		('Diamond', 'King') ,
+		('Diamond', 'Ace') ,
+		('Heart', 'Two') ,
+		('Heart', 'Three') ,
+		('Heart', 'Four') ,
+		('Heart', 'Five') ,
+		('Heart', 'Six') ,
+		('Heart', 'Seven') ,
+		('Heart', 'Eight') ,
+		('Heart', 'Nine') ,
+		('Heart', 'Ten') ,
+		('Heart', 'Jack') ,
+		('Heart', 'Queen') ,
+		('Heart', 'King') ,
+		('Heart', 'Ace') ,
+		('Spade', 'Two') ,
+		('Spade', 'Three') ,
+		('Spade', 'Four') ,
+		('Spade', 'Five') ,
+		('Spade', 'Six') ,
+		('Spade', 'Seven') ,
+		('Spade', 'Eight') ,
+		('Spade', 'Nine') ,
+		('Spade', 'Ten') ,
+		('Spade', 'Jack') ,
+		('Spade', 'Queen') ,
+		('Spade', 'King') ,
+		('Spade', 'Ace') ,
+]
 
 
 class Deck:
-	def __init__(self):
+	def __init__(self, name='Standard'):
 		self.deck = []
+		self.name = name
 		print("Deck class instantiated")
 
 
@@ -85,14 +83,31 @@ class Deck:
 		for i in this_deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
-		self.deck = standard_deck
-		return self.deck
+		this_deck = []
+		for i in list(standard_deck):
+			crd = PlayingCard(i[0],i[1])
+			this_deck.append(crd)
+		for j in this_deck:
+			self.add_card(j)
+
 		#self.deck = self.index
 
 	def draw_hand(self, num_cards, source_deck=None):
 		if not self.hand:
 			self.hand = Deck()
+		drawn = random.sample(sorted(self.deck), num_cards)
+		for i in drawn:
+			self.hand.add
 
+	def add_card(self, playing_card=None):
+		if playing_card is not None:
+			playing_card.in_deck = True
+			self.deck.append(playing_card)
+		if playing_card in self.deck:
+			print(f"Card {playing_card}, was added to the deck")
+			return True
+		else:
+			return False
 
 	def add_joker(self, num_joker=0):
 		# Allows the addition of Jokers which can be played as wildcards
@@ -113,12 +128,13 @@ class Deck:
 			"Heart": {},
 			"Spade": {},
 		}
-		for key, value in self.deck:
-			bins[key][value] = self.deck[(key,value)]
+		for card in self.deck:
+			bins[card.__suit][card.__face] = card
 		return bins
 
 	def count(self):
-		return len(self.in_hand)
+		print(f"This deck contains {len(self.deck):} cards")
+		return len(self.deck)
 
 
 	def deal_card(self, numCards=0, receiving_deck=None):

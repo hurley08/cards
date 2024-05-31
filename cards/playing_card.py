@@ -31,26 +31,28 @@ faces = {
 
 @dataclass
 class PlayingCard:
-    def __init__(self, suit, face, faced_down=True, in_hand=False, in_deck=None):
-        self.suit = suit
-        self.face = face
-        self.id = faces[face]+ 10* suits[suit]
-        self.faced_down = faecd_down
+    def __init__(self, suit, face, face_up=False, in_hand=False, in_deck=None):
+        self.__suit = suit
+        self.__face = face
+        self.__id = faces[face]+ 10 * suits[suit]
+        self.face_up = face_up
         self.in_hand = in_hand
         self.in_deck = in_deck
 
-        print(f"The card {self.suit=} of {self.face=} with a value of {self.id} has been created")
+        print(f"The card {self.__suit:} of {self.__face:} with a value of {self.__id:} has been created")
 
     def show(self):
-        if self.in_hand is True or self.faced_down is False:
-            print(f"{self.id=} (value), {self,suit=}, {self.face=}")
+        if self.in_hand is True or self.face_up is False:
+            print(f"{self.__id=} (value), {self,__suit=}, {self.__face=}")
         else:
-            raise CardNotVisible("A card must be faced up or in hand to be visible")
+            raise CardNotViewable("A card must be faced up or in hand to be visible")
     
-    def face_up(self):
-        if self.faced_down is True:
-            try:
-                self.faced_down = False
+    def flip(self):
+        pre_val = self.face_up
+        try:
+            self.face_up = True if self.face_up is False else False
+            if self.face_up is not pre_val:
                 return True
-            except DeckException as e:
-                print(e, "Something is wrong")
+        except DeckException as e:
+            raise(e, "Something is wrong")
+        return False

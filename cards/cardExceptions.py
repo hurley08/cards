@@ -5,6 +5,6 @@ class CountException(Exception):
 class DeckException(Exception):
 	"""Raised for anomalies and violations pertaining to deck"""
 
-class CardNotVisible(Exception):
+class CardNotViewable(Exception):
 	"""When someone attempts to peek at a facedown card"""
 
