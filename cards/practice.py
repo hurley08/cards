@@ -31,3 +31,8 @@ L = d.binned()
 for i in L:
 	print(i)
 	print(L[i], '\n')
+
+
+d2 = Deck(name="Player")
+d2.count()
+d.deal_card(2, d2)

@@ -32,18 +32,19 @@ faces = {
 @dataclass
 class PlayingCard:
     def __init__(self, suit, face, face_up=False, in_hand=False, in_deck=None):
-        self.__suit = suit
-        self.__face = face
-        self.__id = faces[face]+ 10 * suits[suit]
+        self._suit = suit
+        self._face = face
+        self._id = faces[face]+ 10 * suits[suit]
         self.face_up = face_up
         self.in_hand = in_hand
         self.in_deck = in_deck
 
-        print(f"The card {self.__suit:} of {self.__face:} with a value of {self.__id:} has been created")
+        print(f"The card {self._suit:} of {self._face:} with a value of {self._id:} has been created")
+
 
     def show(self):
-        if self.in_hand is True or self.face_up is False:
-            print(f"{self.__id=} (value), {self,__suit=}, {self.__face=}")
+        if self.in_hand is True or self.face_up is True:
+            print(f"{self._id=} (value), {self,_suit=}, {self._face=}")
         else:
             raise CardNotViewable("A card must be faced up or in hand to be visible")
     

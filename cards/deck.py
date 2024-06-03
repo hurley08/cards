@@ -5,6 +5,7 @@ from cards.playing_card import suits, faces
 from cards.playing_card import PlayingCard
 from cardExceptions import *
 import random
+import copy
 
 
 standard_deck = [
@@ -65,7 +66,7 @@ standard_deck = [
 
 class Deck:
 	def __init__(self, name='Standard'):
-		self.deck = []
+		self.deck = {}
 		self.name = name
 		print("Deck class instantiated")
 
@@ -86,28 +87,51 @@ class Deck:
 		this_deck = []
 		for i in list(standard_deck):
 			crd = PlayingCard(i[0],i[1])
-			this_deck.append(crd)
-		for j in this_deck:
-			self.add_card(j)
+			self.add_card(playing_card=crd)	
+		print(self.deck)	
+		return self.remove_card(self.deck[i])
 
-		#self.deck = self.index
-
-	def draw_hand(self, num_cards, source_deck=None):
-		if not self.hand:
-			self.hand = Deck()
+	def draw(self, num_cards):
+		# Draw a specified number of cards from deck
+	
 		drawn = random.sample(sorted(self.deck), num_cards)
+		card_list = []
 		for i in drawn:
-			self.hand.add
+			card_list.append(self.deck[i])
+			self.remove_card(self.deck[i])
+		return card_list
+			
 
 	def add_card(self, playing_card=None):
+		# Utility to add card to either hand or into deck 
+		# Adds to deck first by default
 		if playing_card is not None:
-			playing_card.in_deck = True
-			self.deck.append(playing_card)
-		if playing_card in self.deck:
-			print(f"Card {playing_card}, was added to the deck")
-			return True
-		else:
-			return False
+			if isinstance(playing_card, PlayingCard) == True:
+				try:	
+					crd_id = (playing_card._suit, playing_card._face)
+					self.deck[crd_id] = playing_card
+				except:
+					raise DeckException("Something went wrong here")
+				finally:
+					if crd_id in self.deck:
+						print(f"Card {playing_card}, was added to the deck")
+						return True
+					else:
+						return False
+
+	def remove_card(self, playing_card=None):
+		# remove a card from this desk
+
+		try:
+			if playing_card is not None and isinstace(playing_card, PlayingCard):
+				crd_id = (playing_card._suit, playing_card._face)
+				self.deck.pop(crd_id)
+				print("Card removed from deck")
+		except: 
+			print("COULDN'T REMOVE MATE")
+
+
+
 
 	def add_joker(self, num_joker=0):
 		# Allows the addition of Jokers which can be played as wildcards
@@ -122,6 +146,8 @@ class Deck:
 
 
 	def binned(self, suitsReturn=suits):
+		# Bins cards for analysis. Should typically be disabled
+		self.count()
 		bins = {
 			"Club": {},
 			"Diamond": {},
@@ -129,10 +155,12 @@ class Deck:
 			"Spade": {},
 		}
 		for card in self.deck:
-			bins[card.__suit][card.__face] = card
+			crd = self.deck[card]
+			bins[crd._suit][crd._face] = crd
 		return bins
 
 	def count(self):
+
 		print(f"This deck contains {len(self.deck):} cards")
 		return len(self.deck)
 
@@ -140,12 +168,19 @@ class Deck:
 	def deal_card(self, numCards=0, receiving_deck=None):
 		if numCards < 1:
 			raise CountException("Number of cards to distribute is required. ")
-		if deck is None:
+		if receiving_deck is None:
 			raise DeckException("A 'destination' deck was not specified")
-		if isinstance(deck, DeckCards) is False:
+		if isinstance(receiving_deck, Deck) is False:
 			raise DeckException("Something was wrong with the destination deck provided")
+		backup_deck = copy.deepcopy(self.deck)
+		backup_rec_deck = copy.deepcopy(receiving_deck.deck)
 
+		try: 
+			drawn = self.draw(numCards)
+			for i in drawn:
+				receiving_deck.add_card(i)
+		except:
+			raise DeckException 
+			self.deck = backup_deck
+			receiving_deck.deck = backup_rec_deck
 
-		cards_to_distribute = []
-		for i in range(numCards):
-			chosen = random.sample(self.deck, numCards)
