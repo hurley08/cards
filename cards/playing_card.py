@@ -39,12 +39,18 @@ class PlayingCard:
         self.in_hand = in_hand
         self.in_deck = in_deck
 
-        print(f"The card {self._suit:} of {self._face:} with a value of {self._id:} has been created")
+        #print(f"The card {self._suit:} of {self._face:} with a value of {self._id:} has been created")
 
+    def __gt__(self, other):
+        return self._id > other._id 
+
+    def __lt__(self, other):
+        return self._id < other._id
 
     def show(self):
         if self.in_hand is True or self.face_up is True:
-            print(f"{self._id=} (value), {self,_suit=}, {self._face=}")
+            pass
+            #print(f"{self._id=} (value), {self,_suit=}, {self._face=}")
         else:
             raise CardNotViewable("A card must be faced up or in hand to be visible")
     

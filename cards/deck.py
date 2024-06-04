@@ -89,16 +89,15 @@ class Deck:
 			crd = PlayingCard(i[0],i[1])
 			self.add_card(playing_card=crd)	
 		print(self.deck)	
-		return self.remove_card(self.deck[i])
+		
 
-	def draw(self, num_cards):
+	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
 	
 		drawn = random.sample(sorted(self.deck), num_cards)
 		card_list = []
 		for i in drawn:
 			card_list.append(self.deck[i])
-			self.remove_card(self.deck[i])
 		return card_list
 			
 
@@ -114,7 +113,7 @@ class Deck:
 					raise DeckException("Something went wrong here")
 				finally:
 					if crd_id in self.deck:
-						print(f"Card {playing_card}, was added to the deck")
+						#print(f"Card {playing_card}, was added to the deck")
 						return True
 					else:
 						return False
@@ -123,12 +122,12 @@ class Deck:
 		# remove a card from this desk
 
 		try:
-			if playing_card is not None and isinstace(playing_card, PlayingCard):
+			if playing_card is not None and isinstance(playing_card, PlayingCard):
 				crd_id = (playing_card._suit, playing_card._face)
 				self.deck.pop(crd_id)
-				print("Card removed from deck")
+				#print("Card removed from deck")
 		except: 
-			print("COULDN'T REMOVE MATE")
+			raise DeckException("COULDN'T REMOVE MATE")
 
 
 
@@ -160,8 +159,7 @@ class Deck:
 		return bins
 
 	def count(self):
-
-		print(f"This deck contains {len(self.deck):} cards")
+		#print(f"{self.name}'s deck contains {len(self.deck):} cards")
 		return len(self.deck)
 
 
@@ -176,11 +174,14 @@ class Deck:
 		backup_rec_deck = copy.deepcopy(receiving_deck.deck)
 
 		try: 
-			drawn = self.draw(numCards)
+			drawn = self.just_draw(numCards)
 			for i in drawn:
 				receiving_deck.add_card(i)
-		except:
-			raise DeckException 
+				self.remove_card(i)
+		except:	
+			raise DeckException("Something went wrong womp womp")
 			self.deck = backup_deck
 			receiving_deck.deck = backup_rec_deck
+
+
 
