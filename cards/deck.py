@@ -17,7 +17,9 @@ class Deck:
 	def __init__(self, name='default_name'):
 		self.deck = {}
 		self.name = name
-		self.count = 0 
+		self.count = 0
+		self.hand = {}
+		self.graveyard = {}
 		logger.info("Deck class instantiated")
 
 
@@ -35,9 +37,9 @@ class Deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
 		this_deck = []
-		randomized_index = random.sample(range(1,len(standard_deck)+1),len(standard_deck))
+		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
 		logger.debug("Temporary deck created")
-		for index in range(len(list(standard_deck))):
+		for index in range(len(standard_deck)):
 			i = standard_deck[index]
 			cId = randomized_index[index]
 			crd = PlayingCard(i[0],i[1])
@@ -49,13 +51,10 @@ class Deck:
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
 
-		drawn = random.sample(sorted(self.deck), num_cards)
+		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
 		logger.debug(drawn)
-		card_list = []
-		for i in drawn:
-			card_list.append(self.deck[i])
-		return card_list
-		logger.debug(card_list)
+		return drawn
+		
 			
 
 	def add_card(self, crd_id=None, playing_card=None):
@@ -73,7 +72,8 @@ class Deck:
 				finally:
 					if crd_id in self.deck:
 						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
-						self.count += 1 
+						self.count += 1
+						assert len(self.deck) != self.count
 						return True
 					else:
 						return False
@@ -83,14 +83,17 @@ class Deck:
 		# remove a card from this desk
 
 		try:
-			if playing_card is not None and isinstance(playing_card, PlayingCard):
-				crd_id
+			if crd_id is not None:
+				obj = self.deck[crd_id]
+				self.graveyard[crd_id] = obj
 				self.deck.pop(crd_id)
 				logging.info(f"{crd_id=} was removed from deck")
 				self.count -= 1
+				return obj
 
 		except: 
 			logging.exception(DeckException("COULDN'T REMOVE MATE"))
+			return False
 
 	def add_joker(self, num_joker=0):
 		# Allows the addition of Jokers
@@ -109,7 +112,7 @@ class Deck:
 	def binned(self, suitsReturn):
 		# Bins cards for analysis. Should typically be disabled
 	
-		self.count()
+		self.count
 		bins = {
 			"Club": {},
 			"Diamond": {},
@@ -125,7 +128,7 @@ class Deck:
 		'''
 
 
-	def deal_card(self, numCards=0, receiving_deck=None):
+	def deal(self, numCards=0, receiving_deck=None):
 		if numCards < 1:
 			logging.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
@@ -138,7 +141,7 @@ class Deck:
 		try: 
 			drawn = self.just_draw(numCards)
 			for i in drawn:
-				receiving_deck.add_card(i)
+				receiving_deck.add_card(i, self.deck[i])
 				self.remove_card(i)
 		except:	
 			self.deck = backup_deck

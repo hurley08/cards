@@ -17,22 +17,25 @@ class PlayingCard:
         self.face_up = face_up
         self.in_hand = in_hand
         self.in_deck = in_deck
-        logging.info(f"The card {self.__Suit:} of {self.__Face:}")
+        logging.info(f"Instantiated {suit:} of {face:}")
 
 
     def __repr__(self):
         # Wraps the show method
-        self.show()
+        res = self.show()
+        return str(res)
 
     def show(self):
         # Reveals the card if it is face up
-        if self.face_up is False:
-            print("The card is face down and cannot be seen")
         logging.debug(f"Show card {self.face_up=}, {self.in_hand=}]")
-        return (self.face, self.suit)
+        if self.face_up is False or self.in_hand is False:
+            return self.suit, self.face
+
+        else:
+            return self.__Face, self.__Suit
     
     def flip(self):
-        logging.info("Flipping card")
+        logging.debug("Flipping card")
         if self.face_up is False:
             self.face = self.__Face
             self.suit = self.__Suit
