@@ -92,7 +92,7 @@ class Tables:
 	}
 
 
-	rankings_single_level_dict = {
+	rankings_single_level = {
 		('Club', 'Two'): 1,
 		('Club', 'Three'): 2,
 		('Club', 'Four'): 3,

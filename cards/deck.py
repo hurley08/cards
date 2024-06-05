@@ -11,10 +11,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 tables = Tables()
-standard_deck = list(tables.rankings_single_level_dict.keys())
+standard_deck = list(tables.rankings_single_level.keys())
 
 class Deck:
 	def __init__(self, name='default_name'):
+		self.cards = []
 		self.deck = {}
 		self.name = name
 		self.count = 0
@@ -23,19 +24,16 @@ class Deck:
 		logger.info("Deck class instantiated")
 
 
-	def generate_deck(self):
+	def generate_deck(self, face_up=False):
 		# Creates a regular set of cards with 2-A of every suit
 		# This must be blocked if Deck becomes a parent class that players can inherit 
-		'''
-		this_deck = {}
-		for i in suits:
-			for j in faces:
-				card = PlayingCard(i,j)
-				this_deck.update({card.id:card})
-		self.deck = {}
-		for i in this_deck:
-			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
-		'''
+		temp = []
+		for i in standard_deck:
+			card = PlayingCard(suit=i[0], face=i[1], face_up=True )
+			self.cards.append([card,i[0],i[1]])
+
+
+		
 		this_deck = []
 		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
 		logger.debug("Temporary deck created")
@@ -54,8 +52,21 @@ class Deck:
 		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
 		logger.debug(drawn)
 		return drawn
-		
-			
+	
+	def shuffle(self):
+		# some algorithm to rearrange our list of cards
+		if self.cards is not None:
+			for i in range(len(self.cards)-1, 0, -1):
+				r = random.randint(0, i)
+				self.cards[r], self.cards[i] = self.cards[i], self.cards[r]
+				return True
+		return False
+
+
+	def count(self):
+		# Get the number of cards in deck
+		return len(self.deck)
+
 
 	def add_card(self, crd_id=None, playing_card=None):
 		# Utility to add card to either hand or into deck 
@@ -73,7 +84,7 @@ class Deck:
 					if crd_id in self.deck:
 						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
 						self.count += 1
-						assert len(self.deck) != self.count
+						assert len(self.deck) == self.count
 						return True
 					else:
 						return False
