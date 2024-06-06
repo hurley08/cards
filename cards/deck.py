@@ -1,6 +1,5 @@
 #cards/deck.py
 
-from dataclasses import dataclass 
 from cards.playing_card import PlayingCard
 from cards.tables import Tables
 from cards.cardExceptions import *
@@ -37,7 +36,7 @@ class Deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
 		this_deck = []
-		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
+		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)),len(standard_deck))
 		logger.debug("Temporary deck created")
 		for index in range(len(standard_deck)):
 			i = standard_deck[index]
@@ -50,8 +49,9 @@ class Deck:
 
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
+		options = list(self.deck)
+		drawn = random.sample(options, num_cards)
 
-		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
 		logger.debug(drawn)
 		return drawn
 		
@@ -73,7 +73,7 @@ class Deck:
 					if crd_id in self.deck:
 						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
 						self.count += 1
-						assert len(self.deck) != self.count
+						assert len(self.deck) == self.count
 						return True
 					else:
 						return False
@@ -128,7 +128,7 @@ class Deck:
 		'''
 
 
-	def deal(self, numCards=0, receiving_deck=None):
+	def deal(self, numCards=0, receiving_deck=None, flip=False):
 		if numCards < 1:
 			logging.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
@@ -142,6 +142,8 @@ class Deck:
 			drawn = self.just_draw(numCards)
 			for i in drawn:
 				receiving_deck.add_card(i, self.deck[i])
+				if flip:
+					receiving_deck.deck[i].flip()
 				self.remove_card(i)
 		except:	
 			self.deck = backup_deck

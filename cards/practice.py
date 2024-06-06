@@ -3,6 +3,7 @@
 from cards.deck import Deck
 from cards.playing_card import PlayingCard
 from cards.cardExceptions import *
+from cards.tables import Tables 
 import random
 import logging
 import sys 
@@ -11,6 +12,8 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(filename="cards.log", filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 stdout = logging.StreamHandler(stream=sys.stdout)
 
+
+rankings = Tables().rankings_single_level_dict
 
 def generate_std_deck(suits, faces):
 	std_deck = []
@@ -62,53 +65,66 @@ def distribute_to_players(decks):
 
 
 
-
-
-
-
 class Game:
 	# Class to manage objects and rules 
 	def __init__(self, Player1, Player2):
 		self.gameover = None
 		self.winner = None
-		self.p1_deck = Player1
-		self.p2_deck = Player2
-		self.p1_deck.stage = None
-		self.p2_deck.stage = None
-		self.p1_cards = self.p1_deck.count
-		self.p2_cards = self.p2_deck.count
-		self.players = [self.p1_deck, self.p2_deck]
+		self.p1 = Player1
+		self.p2 = Player2
+		self.p1.stage = Deck(name="p1_stage")
+		self.p2.stage = Deck(name="p2_stage")
+		self.p1_cards = self.p1.count
+		self.p2_cards = self.p2.count
+		#self.players = [self.p1_deck, self.p2_deck]		
 
 
 	def begin(self):
 		self.gameover = False
 		self.winner = False
 		self.turn = 0
+		Player1 = self.p1
+		Player2 = self.p2
+		print(f"{id(Player1)=} | {self.p1=}")
+		print(f"{id(Player2)=} | {self.p2=}")
+
+			#Previous approach
+			#self.p1_deck.deal(1, self.p1_deck.stage, True)
+			#self.p2_deck.deal(1, self.p2_deck.stage, True)
+			#indexp1 = list(self.p1_deck.stage.deck.keys())[0]
+			#indexp2 = list(self.p1_deck.stage.deck.keys())[0]
+			#print(f"{self.p1_deck.stage.deck[indexp1]=}")
+			#print(f"{self.p2_deck.stage.deck[indexp2]=}")
+
 
 		while (self.p1_cards > 0 and self.p2_cards > 0):
+			Player1.deal(1, Player1.stage, True)
+			Player2.deal(1, Player2.stage, True)
+			key1 = list(self.p1.stage.deck)[0]
+			key2 = list(self.p2.stage.deck)[0]
 
-			for playr in self.players:
-				temp = playr.just_draw(1)
-				#print(temp)
-				playr.stage = temp[0]
-				#print(playr.stage)
-			
-			if self.p1_deck.stage > self.p2_deck.stage:
-				self.p1_deck.add_card(self.p2_deck.stage)
-				self.p2_deck.remove_card(self.p2_deck.stage)
+			card1 = self.p1.stage.deck[key1]
+			card2 = self.p2.stage.deck[key2]
+			if rankings[card1.show()] > rankings[card2.show()]:
+				self.p2.stage.deal(1, self.p1, True)
+				print(f"{self.p2.stage.count=}, {self.p2.stage.deck=}")
 			else:
-				self.p2_deck.add_card(self.p1_deck.stage)
-				self.p1_deck.remove_card(self.p1_deck.stage)
-			self.turn += 1 
+				Player1.stage.deal(1, self.p2, True)
+			#if Player2.stage.count > 0:
+			#	Player2.stage.deal(Player2.stage.count, Player2, True)
+			#if Player1.stage.count > 0:
+		#		Player1.stage.deal(Player1.stage.count, Player1, True)
+
 			
+			self.turn += 1 
 			self.update_counts()
 		print("turn: ", self.turn)
 		print(f"")
 
 	def update_counts(self):
-		self.p1_cards = self.p1_deck.count()
+		self.p1_cards = self.p1.count
 
-		self.p2_cards = self.p2_deck.count()
+		self.p2_cards = self.p2.count
 
 
 
@@ -118,10 +134,16 @@ class Game:
 
 
 distribute_to_players([d1,d2])
+print(d1.count)
+print(d2.count)
 
 game = Game(d1, d2)
 
 game.begin()
 
-p1card = (game.p1_deck.stage._suit, game.p1_deck.stage._face)
-p2card = (game.p2_deck.stage._suit, game.p2_deck.stage._face)
+print(game.p1.count, game.p1.stage.count)
+print(game.p2.count, game.p2.stage.count)
+
+
+#p1card = (game.p1_deck.stage.suit, game.p1_deck.stage.face)
+#p2card = (game.p2_deck.stage.suit, game.p2_deck.stage.face)
