@@ -10,8 +10,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-tables = Tables()
-standard_deck = list(tables.rankings_single_level.keys())
+standard_deck = list(Tables().rankings_single_level.keys())
+rankings = Tables().rankings_single_level
 
 class Deck:
 	def __init__(self, name='default_name'):
@@ -21,6 +21,7 @@ class Deck:
 		self.count = 0
 		self.hand = {}
 		self.graveyard = {}
+	
 		logger.info("Deck class instantiated")
 
 
@@ -48,13 +49,13 @@ class Deck:
 
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
-
 		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
 		logger.debug(drawn)
 		return drawn
 	
+
 	def shuffle(self):
-		# some algorithm to rearrange our list of cards
+		# Some algorithm to rearrange our list of cards
 		if self.cards is not None:
 			for i in range(len(self.cards)-1, 0, -1):
 				r = random.randint(0, i)
@@ -69,9 +70,7 @@ class Deck:
 
 
 	def add_card(self, crd_id=None, playing_card=None):
-		# Utility to add card to either hand or into deck 
-		# Adds to deck first by default
-
+		# Utility to add a card into the deck  
 		if (playing_card and crd_id) is not None:
 			if isinstance(playing_card, PlayingCard) == True:
 				try:	
@@ -91,8 +90,7 @@ class Deck:
 
 
 	def remove_card(self, crd_id):
-		# remove a card from this desk
-
+		# Remove a card from this des
 		try:
 			if crd_id is not None:
 				obj = self.deck[crd_id]
@@ -117,6 +115,7 @@ class Deck:
 	def dealer_peek_deck(self):
 		# Allows a player to view the whole of the deck
 		# Intended for very special decks (like Dealers)
+
 		print(self.deck)
 
 
@@ -130,16 +129,19 @@ class Deck:
 			"Heart": {},
 			"Spade": {},
 		}
-		print("this was broken by introduction of face up concept")
-		'''
+		#print("this was broken by introduction of face up concept")
+		
 		for card in self.deck:
 			crd = self.deck[card]
 			bins[crd._suit][crd._face] = crd
 		return bins
-		'''
+		
 
 
 	def deal(self, numCards=0, receiving_deck=None):
+		# This is uses remove_card and add_card methods that callks
+		# remove from the current deck and add from the recipient deck
+
 		if numCards < 1:
 			logging.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
@@ -160,5 +162,9 @@ class Deck:
 			logging.exception(DeckException("Something went wrong womp womp"))
 
 
-
-
+	def compare_2_cards(self, card1, card2):
+		results = []
+		for i in [card1, card2]:
+			rasults
+		a = self.rankings[(card1.suit, card1.face)]
+		b = self.rankings(
