@@ -3,12 +3,13 @@
 from dataclasses import dataclass 
 from cards.playing_card import PlayingCard
 from cards.tables import Tables
+from loguru import logger
 from cards.cardExceptions import *
 import random
 import copy
-import logging
 
-logger = logging.getLogger(__name__)
+
+#logger = logger.getLogger(__name__)
 
 standard_deck = list(Tables().rankings_single_level.keys())
 rankings = Tables().rankings_single_level
@@ -18,7 +19,7 @@ class Deck:
 		self.cards = []
 		self.deck = {}
 		self.name = name
-		self.count = 0
+		self.numCards = 0
 		self.hand = {}
 		self.graveyard = {}
 	
@@ -36,7 +37,7 @@ class Deck:
 
 		
 		this_deck = []
-		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
+		randomized_index = random.sample(range(self.count()+1,self.count()+1+len(standard_deck)+1),len(standard_deck))
 		logger.debug("Temporary deck created")
 		for index in range(len(standard_deck)):
 			i = standard_deck[index]
@@ -82,8 +83,8 @@ class Deck:
 				finally:
 					if crd_id in self.deck:
 						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
-						self.count += 1
-						assert len(self.deck) == self.count
+						self.numCards += 1
+						assert len(self.deck) == self.count()
 						return True
 					else:
 						return False
@@ -96,12 +97,12 @@ class Deck:
 				obj = self.deck[crd_id]
 				self.graveyard[crd_id] = obj
 				self.deck.pop(crd_id)
-				logging.info(f"{crd_id=} was removed from deck")
-				self.count -= 1
+				logger.info(f"{crd_id=} was removed from deck")
+				self.numCards -= 1
 				return obj
 
 		except: 
-			logging.exception(DeckException("COULDN'T REMOVE MATE"))
+			logger.exception(DeckException("COULDN'T REMOVE MATE"))
 			return False
 
 	def add_joker(self, num_joker=0):
@@ -143,11 +144,11 @@ class Deck:
 		# remove from the current deck and add from the recipient deck
 
 		if numCards < 1:
-			logging.exception(CountException("Number of cards to distribute is required. "))
+			logger.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
-			logging.exception(DeckException("A 'destination' deck was not specified"))
+			logger.exception(DeckException("A 'destination' deck was not specified"))
 		if isinstance(receiving_deck, Deck) is False:
-			logging.exception(DeckException("Something was wrong with the destination deck provided"))
+			logger.exception(DeckException("Something was wrong with the destination deck provided"))
 		backup_deck = copy.deepcopy(self.deck)
 		backup_rec_deck = copy.deepcopy(receiving_deck.deck)
 
@@ -159,7 +160,7 @@ class Deck:
 		except:	
 			self.deck = backup_deck
 			receiving_deck.deck = backup_rec_deck
-			logging.exception(DeckException("Something went wrong womp womp"))
+			logger.exception(DeckException("Something went wrong womp womp"))
 
 
 	def compare_2_cards(self, card1, card2):
@@ -167,4 +168,4 @@ class Deck:
 		for i in [card1, card2]:
 			rasults
 		a = self.rankings[(card1.suit, card1.face)]
-		b = self.rankings(
+		b = self.rankings[(card2.suit, card2.face)] 

@@ -5,7 +5,9 @@ description = "Models a deck of cards"
 authors = [
     {name = "hurley08", email = "intriqet@gmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "loguru>=0.7.2",
+]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
