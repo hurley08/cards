@@ -6,6 +6,7 @@ from cards.playing_card import PlayingCard
 from cardExceptions import *
 import random
 import copy
+import logging
 
 
 standard_deck = [
@@ -66,9 +67,10 @@ standard_deck = [
 
 class Deck:
 	def __init__(self, name='Standard'):
+		# Initializes I robably would be ab
 		self.deck = {}
 		self.name = name
-		print("Deck class instantiated")
+		logging.info("Deck class instantiated")
 
 
 	def generate_deck(self):
@@ -88,7 +90,7 @@ class Deck:
 		for i in list(standard_deck):
 			crd = PlayingCard(i[0],i[1])
 			self.add_card(playing_card=crd)	
-		print(self.deck)	
+		#print(self.deck)	
 		
 
 	def just_draw(self, num_cards):
