@@ -3,11 +3,26 @@
 from cards.deck import Deck
 from cards.deck import standard_deck
 from cards.playing_card import PlayingCard, suits, faces
+from loguru import logger
 from cardExceptions import *
 
 from dataclasses import dataclass
 import random
-import logging
+import sys
+import time
+
+logger.remove()
+logger.add(sys.stderr, colorize=True, format="{time:MM-DD-YYYY HH:mm:X} [{level}] {message}")
+
+logger.add("main_{time}.log")
+logger.success("Successfully changed format")
+logger.level("DEBUG", color="<blue>")
+logger.level("INFO", color="<white>")
+logger.level("SUCCESS", color="<green>")
+logger.level("ERROR", color="<red>")
+logger.level("CRITICAL", color="<magenta")
+
+
 
 '''
 def generate_std_deck(suits, faces):
@@ -48,7 +63,7 @@ class Game:
 		self.p1_cards = self.p1.count()
 		self.p2_cards = self.p2.count()
 		self.players = [self.p1, self.p2]
-		logging.info("Game object instantiated")
+		logger.success("Game object instantiated")
 		self.dealer.generate_deck()
 
 
@@ -61,7 +76,7 @@ class Game:
 			for i in decks:
 				self.dealer.deal_card(1, i)
 			count = self.dealer.count()
-		logging.debug(f"{self.p1.count()=}, {self.p2.count()=}")
+		logger.debug(f"{self.p1.count()=}, {self.p2.count()=}")
 
 
 
@@ -71,17 +86,21 @@ class Game:
 		self.gameover = False
 		self.winner = False
 		self.turn = 0
-		logging.info("The game has begun")
+		logger.info("The game has begun")
 
 		while (self.p1.count() > 0 and self.p2.count() > 0):
+			time.sleep(.005)
 			for playr in self.players:
 				temp = playr.just_draw(1)
 				playr.hand = temp[0]
-			logging.debug(f"{self.p1.hand=} vs {self.p2.hand=}")
+			logger.debug(f"turn: {self.turn}, {self.p1.hand._face} of {self.p1.hand._suit}s vs , {self.p2.hand._face} of {self.p2.hand._suit}s")
+			logger.debug(f"{self.p1.hand._id=} vs {self.p2.hand._id=}")
 			if self.p1.hand > self.p2.hand:
+				logger.info(f"{self.p1.hand._suit=}, {self.p1.hand._face=} is greater")
 				self.p1.add_card(self.p2.hand)
 				self.p2.remove_card(self.p2.hand)
 			else:
+				logger.info(f"{self.p2.hand._suit=}, {self.p2.hand._face=} is greater")
 				self.p2.add_card(self.p1.hand)
 				self.p1.remove_card(self.p1.hand)
 			
@@ -90,19 +109,19 @@ class Game:
 			self.update_counts()
 		self.gameover = True
 		self.winner = self.p1 if self.p1_cards > self.p2_cards else self.p2
-		logging.info(f"{self.winner=}, {self.turn}")
-		print("\nwinner: ", self.winner.name, "\nturn: ", self.turn)
-		print(f"")
+		logger.success(f"{self.winner.name=} won in {self.turn} turns")
+		print(f"\nwinner: ", self.winner.name, "\nturn: ", self.turn)
 
 
 	def update_counts(self):
 		# Update the count attribute for each player deck
 
-		logging.debug("Updating cards of he deck")
-
+		
+		logger.debug(f"{self.p1_cards=}, {self.p2_cards=}")
+		logger.info("Updating deck counts")
 		self.p1_cards = self.p1.count()
 		self.p2_cards = self.p2.count()
-
+		logger.debug(f"{self.p1_cards=}, {self.p2_cards=}")
 
 
 

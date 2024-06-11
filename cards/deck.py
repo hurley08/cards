@@ -3,10 +3,11 @@
 from dataclasses import dataclass 
 from cards.playing_card import suits, faces
 from cards.playing_card import PlayingCard
+from loguru import logger
 from cardExceptions import *
 import random
 import copy
-import logging
+import sys
 
 
 standard_deck = [
@@ -64,13 +65,21 @@ standard_deck = [
 		('Spade', 'Ace') ,
 ]
 
+logger.add(sys.stderr, format="{time:MMMM D, YYYY > HH:mm:ss} | {level} | {message}")
+logger.add("deck_{time}.log")
+logger.level("DEBUG", color="<blue>")
+logger.level("INFO", color="<white>")
+logger.level("SUCCESS", color="<green>")
+logger.level("ERROR", color="<red>")
+logger.level("CRITICAL", color="<magenta")
+
 
 class Deck:
 	def __init__(self, name='Standard'):
 		# Initializes I robably would be ab
 		self.deck = {}
 		self.name = name
-		logging.info("Deck class instantiated")
+		logger.info("Deck class instantiated")
 
 
 	def generate_deck(self):
@@ -90,6 +99,7 @@ class Deck:
 		for i in list(standard_deck):
 			crd = PlayingCard(i[0],i[1])
 			self.add_card(playing_card=crd)	
+		logger.info(f"{self.name} and dec")
 		#print(self.deck)	
 		
 
