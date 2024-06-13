@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 from cards import cardExceptions
-<<<<<<< HEAD
 from cards.tables import Tables
 from loguru import logger
 table = Tables().rankings_single_level_dict
@@ -46,27 +45,8 @@ class PlayingCard:
         self.in_hand = in_hand
         self.in_deck = in_deck
         logger.success(f"Card Initialized: {self._face}, {self._suit}")
-=======
-import logging
-
-logger = logging.getLogger(__name__)
-
-@dataclass
-class PlayingCard:
-    def __init__(self, suit, face, face_up=False, in_hand=False, in_deck=None):
-        # Initialize a playing card object. 
-        self.__Suit = suit
-        self.__Face = face
-        self.face = "Hidden"
-        self.suit = "Hidden"
-        self.face_up = face_up
-        self.in_hand = in_hand
-        self.in_deck = in_deck
-        logging.info(f"Instantiated {suit:} of {face:}")
->>>>>>> main
 
 
-<<<<<<< HEAD
     def get_rankings(self, table=None):
         # Retrieves a table that ranks every card
         try: 
@@ -90,16 +70,9 @@ class PlayingCard:
         # Defined explicitly
         logger.debug("LT comparison used")
         return self._id < other._id
-=======
-    def __repr__(self):
-        # Wraps the show method
-        res = self.show()
-        return str(res)
->>>>>>> main
 
 
     def show(self):
-<<<<<<< HEAD
         # It's difficult to keep changing an obkects visibility through the
         # use of aattributes. The intention of this is to return the
         # details of a card if they are visible
@@ -125,7 +98,7 @@ class PlayingCard:
             raise(e, "Something is wrong")
             logger.error(e)
         return False
-=======
+
         # Reveals the card if it is face up
         logging.debug(f"Show card {self.face_up=}, {self.in_hand=}]")
         if self.face_up is False or self.in_hand is False:
@@ -134,16 +107,3 @@ class PlayingCard:
         else:
             return self.__Face, self.__Suit
     
-    def flip(self):
-        logging.debug("Flipping card")
-        if self.face_up is False:
-            self.face = self.__Face
-            self.suit = self.__Suit
-            self.face_up = True
-            logging.info("Revealing card")
-        else:
-            self.face = "Hidden"
-            self.suit = "Hidden"
-            self.face_up = False
-            logging.info("Card hidden")
->>>>>>> main
