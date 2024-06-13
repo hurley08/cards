@@ -1,26 +1,15 @@
 # practice.py
  
 from cards.deck import Deck
-from cards.deck import standard_deck
 from cards.playing_card import PlayingCard, suits, faces
 from loguru import logger
+from dataclasses import dataclass
 from cardExceptions import *
 
-from dataclasses import dataclass
 import random
 import sys
 import time
 
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="{time:MM-DD-YYYY HH:mm:X} [{level}] {message}")
-
-logger.add("main_{time}.log")
-logger.success("Successfully changed format")
-logger.level("DEBUG", color="<blue>")
-logger.level("INFO", color="<white>")
-logger.level("SUCCESS", color="<green>")
-logger.level("ERROR", color="<red>")
-logger.level("CRITICAL", color="<magenta")
 
 
 
@@ -66,6 +55,19 @@ class Game:
 		logger.success("Game object instantiated")
 		self.dealer.generate_deck()
 
+	def info(self, slp=5):
+		# Just to explain the rules of the game
+		message=((
+		"This game is called War."
+		" It begins with 2 players receiving half of the dealers deck"
+		" and ends when one of the players have no cards left to play."
+		" A card is drawn every round by each player. The player whose"
+		" card has the higher value gets to keep and shuffle both cards"
+		" into their deck"
+	))
+		logger.debug(f"Displaying game info {message} for {slp} seconds")
+		print(f"\n{message:}")
+		time.sleep(slp)
 
 	def distribute_cards(self, decks):
 		# Alternate dealing a single card until
@@ -93,14 +95,13 @@ class Game:
 			for playr in self.players:
 				temp = playr.just_draw(1)
 				playr.hand = temp[0]
-			logger.debug(f"turn: {self.turn}, {self.p1.hand._face} of {self.p1.hand._suit}s vs , {self.p2.hand._face} of {self.p2.hand._suit}s")
-			logger.debug(f"{self.p1.hand._id=} vs {self.p2.hand._id=}")
+			logger.debug(f"turn: {self.turn}, {self.p1.hand._face} of {self.p1.hand._suit}s ({self.p1.hand._id}) vs , {self.p2.hand._face} of {self.p2.hand._suit}s ({self.p2.hand._id})")
 			if self.p1.hand > self.p2.hand:
-				logger.info(f"{self.p1.hand._suit=}, {self.p1.hand._face=} is greater")
+				logger.info(f"{self.p1.hand._face} of {self.p1.hand._suit}s  is greater")
 				self.p1.add_card(self.p2.hand)
 				self.p2.remove_card(self.p2.hand)
 			else:
-				logger.info(f"{self.p2.hand._suit=}, {self.p2.hand._face=} is greater")
+				logger.info(f"{self.p2.hand._face} of {self.p2.hand._suit}s is greater")
 				self.p2.add_card(self.p1.hand)
 				self.p1.remove_card(self.p1.hand)
 			
@@ -115,17 +116,26 @@ class Game:
 
 	def update_counts(self):
 		# Update the count attribute for each player deck
-
-		
-		logger.debug(f"{self.p1_cards=}, {self.p2_cards=}")
-		logger.info("Updating deck counts")
+		pre1 = self.p1_cards
+		pre2 = self.p2_cards
 		self.p1_cards = self.p1.count()
 		self.p2_cards = self.p2.count()
-		logger.debug(f"{self.p1_cards=}, {self.p2_cards=}")
+		logger.debug(f"Counts updated | \t p1: {pre1} >> {self.p1_cards}, p2: {pre2} >> {self.p2_cards}")
 
 
+if __name__ == "__main__": 
 
+	logger.remove()
+	logger.add(sys.stderr, colorize=True, format="{time:MM-DD-YYYY HH:mm:X} [{level}] {message}", diagnose=False)
+	logger.add("{time:YYYY-MM-DD}.log", diagnose=False)
+	logger.success("Successfully changed format")
+	logger.level("DEBUG", color="<blue>")
+	logger.level("INFO", color="<white>")
+	logger.level("SUCCESS", color="<green>")
+	logger.level("ERROR", color="<red>")
+	logger.level("CRITICAL", color="<magenta")
+	game = Game()
+	game.info()
+	game.distribute_cards([game.p1, game.p2])
+	game.begin()
 
-game = Game()
-game.distribute_cards([game.p1, game.p2])
-game.begin()

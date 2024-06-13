@@ -65,13 +65,7 @@ standard_deck = [
 		('Spade', 'Ace') ,
 ]
 
-logger.add(sys.stderr, format="{time:MMMM D, YYYY > HH:mm:ss} | {level} | {message}")
-logger.add("deck_{time}.log")
-logger.level("DEBUG", color="<blue>")
-logger.level("INFO", color="<white>")
-logger.level("SUCCESS", color="<green>")
-logger.level("ERROR", color="<red>")
-logger.level("CRITICAL", color="<magenta")
+
 
 
 class Deck:
