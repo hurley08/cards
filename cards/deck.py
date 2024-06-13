@@ -1,7 +1,6 @@
 #cards/deck.py
 
 from dataclasses import dataclass 
-from cards.playing_card import suits, faces
 from cards.playing_card import PlayingCard
 from loguru import logger
 from cardExceptions import *
@@ -10,69 +9,21 @@ import copy
 import sys
 
 
-standard_deck = [
-		('Club', 'Two') ,
-		('Club', 'Three') ,
-		('Club', 'Four') ,
-		('Club', 'Five') ,
-		('Club', 'Six') ,
-		('Club', 'Seven') ,
-		('Club', 'Eight') ,
-		('Club', 'Nine') ,
-		('Club', 'Ten') ,
-		('Club', 'Jack') ,
-		('Club', 'Queen') ,
-		('Club', 'King') ,
-		('Club', 'Ace') ,
-		('Diamond', 'Two') ,
-		('Diamond', 'Three') ,
-		('Diamond', 'Four') ,
-		('Diamond', 'Five') ,
-		('Diamond', 'Six') ,
-		('Diamond', 'Seven') ,
-		('Diamond', 'Eight') ,
-		('Diamond', 'Nine') ,
-		('Diamond', 'Ten') ,
-		('Diamond', 'Jack') ,
-		('Diamond', 'Queen') ,
-		('Diamond', 'King') ,
-		('Diamond', 'Ace') ,
-		('Heart', 'Two') ,
-		('Heart', 'Three') ,
-		('Heart', 'Four') ,
-		('Heart', 'Five') ,
-		('Heart', 'Six') ,
-		('Heart', 'Seven') ,
-		('Heart', 'Eight') ,
-		('Heart', 'Nine') ,
-		('Heart', 'Ten') ,
-		('Heart', 'Jack') ,
-		('Heart', 'Queen') ,
-		('Heart', 'King') ,
-		('Heart', 'Ace') ,
-		('Spade', 'Two') ,
-		('Spade', 'Three') ,
-		('Spade', 'Four') ,
-		('Spade', 'Five') ,
-		('Spade', 'Six') ,
-		('Spade', 'Seven') ,
-		('Spade', 'Eight') ,
-		('Spade', 'Nine') ,
-		('Spade', 'Ten') ,
-		('Spade', 'Jack') ,
-		('Spade', 'Queen') ,
-		('Spade', 'King') ,
-		('Spade', 'Ace') ,
-]
 
+logger = logging.getLogger(__name__)
+
+tables = Tables()
+standard_deck = list(tables.rankings_single_level_dict.keys())
 
 
 
 class Deck:
-	def __init__(self, name='Standard'):
-		# Initializes I robably would be ab
+	def __init__(self, name='default_name'):
 		self.deck = {}
 		self.name = name
+		self.count = 0
+		self.hand = {}
+		self.graveyard = {}
 		logger.info("Deck class instantiated")
 
 
@@ -90,59 +41,72 @@ class Deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
 		this_deck = []
-		for i in list(standard_deck):
+		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
+		logger.debug("Temporary deck created")
+		for index in range(len(standard_deck)):
+			i = standard_deck[index]
+			cId = randomized_index[index]
 			crd = PlayingCard(i[0],i[1])
-			self.add_card(playing_card=crd)	
-		logger.info(f"{self.name} and dec")
-		#print(self.deck)	
-		
+
+			self.add_card(crd_id=cId, playing_card=crd)	
+		logger.info("Deck has been generated")
+		logger.debug(self.deck)	
+
 
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
-	
-		drawn = random.sample(sorted(self.deck), num_cards)
-		card_list = []
-		for i in drawn:
-			card_list.append(self.deck[i])
-		return card_list
+
+		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
+		logger.debug(drawn)
+		return drawn
+		
 			
 
-	def add_card(self, playing_card=None):
+	def add_card(self, crd_id=None, playing_card=None):
 		# Utility to add card to either hand or into deck 
 		# Adds to deck first by default
-		if playing_card is not None:
+
+		if (playing_card and crd_id) is not None:
 			if isinstance(playing_card, PlayingCard) == True:
 				try:	
-					crd_id = (playing_card._suit, playing_card._face)
 					self.deck[crd_id] = playing_card
-				except:
-					raise DeckException("Something went wrong here")
+					logger.info(f"A card was added to the deck")
+
+				except Exception as e:
+					logging.exception(f"Something went wrong here {e=} ")
 				finally:
 					if crd_id in self.deck:
-						#print(f"Card {playing_card}, was added to the deck")
+						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
+						self.count += 1
+						assert len(self.deck) != self.count
 						return True
 					else:
 						return False
 
-	def remove_card(self, playing_card=None):
+
+	def remove_card(self, crd_id):
 		# remove a card from this desk
 
 		try:
-			if playing_card is not None and isinstance(playing_card, PlayingCard):
-				crd_id = (playing_card._suit, playing_card._face)
+			if crd_id is not None:
+				obj = self.deck[crd_id]
+				self.graveyard[crd_id] = obj
 				self.deck.pop(crd_id)
-				#print("Card removed from deck")
+				logging.info(f"{crd_id=} was removed from deck")
+				self.count -= 1
+				return obj
+
 		except: 
-			raise DeckException("COULDN'T REMOVE MATE")
-
-
-
+			logging.exception(DeckException("COULDN'T REMOVE MATE"))
+			return False
 
 	def add_joker(self, num_joker=0):
-		# Allows the addition of Jokers which can be played as wildcards
+		# Allows the addition of Jokers
 
 		for i in range(num_joker):
-			self.deck.append(PlayingCard(None, "Joker"))
+			self.add_card(len(standard_deck)+i, PlayingCard("Joker", i))
+
+
 
 	def dealer_peek_deck(self):
 		# Allows a player to view the whole of the deck
@@ -150,44 +114,45 @@ class Deck:
 		print(self.deck)
 
 
-	def binned(self, suitsReturn=suits):
+	def binned(self, suitsReturn):
 		# Bins cards for analysis. Should typically be disabled
-		self.count()
+	
+		self.count
 		bins = {
 			"Club": {},
 			"Diamond": {},
 			"Heart": {},
 			"Spade": {},
 		}
+		print("this was broken by introduction of face up concept")
+		'''
 		for card in self.deck:
 			crd = self.deck[card]
 			bins[crd._suit][crd._face] = crd
 		return bins
-
-	def count(self):
-		#print(f"{self.name}'s deck contains {len(self.deck):} cards")
-		return len(self.deck)
+		'''
 
 
-	def deal_card(self, numCards=0, receiving_deck=None):
+	def deal(self, numCards=0, receiving_deck=None):
 		if numCards < 1:
-			raise CountException("Number of cards to distribute is required. ")
+			logging.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
-			raise DeckException("A 'destination' deck was not specified")
+			logging.exception(DeckException("A 'destination' deck was not specified"))
 		if isinstance(receiving_deck, Deck) is False:
-			raise DeckException("Something was wrong with the destination deck provided")
+			logging.exception(DeckException("Something was wrong with the destination deck provided"))
 		backup_deck = copy.deepcopy(self.deck)
 		backup_rec_deck = copy.deepcopy(receiving_deck.deck)
 
 		try: 
 			drawn = self.just_draw(numCards)
 			for i in drawn:
-				receiving_deck.add_card(i)
+				receiving_deck.add_card(i, self.deck[i])
 				self.remove_card(i)
 		except:	
-			raise DeckException("Something went wrong womp womp")
 			self.deck = backup_deck
 			receiving_deck.deck = backup_rec_deck
+			logging.exception(DeckException("Something went wrong womp womp"))
+
 
 
 

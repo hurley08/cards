@@ -1,4 +1,4 @@
-# practice.py
+# cards/practice.py
  
 from cards.deck import Deck
 from cards.playing_card import PlayingCard, suits, faces
@@ -11,6 +11,10 @@ import sys
 import time
 
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="cards.log", filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+stdout = logging.StreamHandler(stream=sys.stdout)
+
 
 
 '''
@@ -20,18 +24,57 @@ def generate_std_deck(suits, faces):
 		for j in faces:
 			tup =f"('{i}', '{j}')"
 			std_deck.append(tup)
+<<<<<<< HEAD
+=======
+			logging.debug(tup,',')
+>>>>>>> main
 	return std_deck
 
 
 
+<<<<<<< HEAD
 def distribute_to_players(decks):
 
 
 	count = d.count()
+=======
+def seq():
+	d = Deck(name="Ron")
+	d.generate_deck
+	d2 = Deck(name="Player2")
+	tw = d.just_draw(3)
+	for i in tw:
+		d.remove_card(i)
+
+
+d = Deck(name="Dealer")
+d.generate_deck()
+#print(d.deck)
+#print(d.binned())
+#
+# print(d.count)
+#L = d.binned(["Hearts"])
+#for i in L:
+#	print(i)
+	#print(L[i], '\n')
+
+
+d1 = Deck(name="Player1")
+d2 = Deck(name="Player2")
+#d.deal_card(d.count()/2,d1)
+#d.deal_card(d.count(), d2)
+d1.count
+d2.count
+
+
+
+def distribute_to_players(decks):
+	count = d.count
+>>>>>>> main
 	while count >= 1:
 		for i in decks:
-			d.deal_card(1, i)
-		count = d.count()
+			d.deal(1, i)
+		count = d.count
 
 '''
 
@@ -79,7 +122,6 @@ class Game:
 				self.dealer.deal_card(1, i)
 			count = self.dealer.count()
 		logger.debug(f"{self.p1.count()=}, {self.p2.count()=}")
-
 
 
 	def begin(self):
