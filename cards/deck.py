@@ -55,12 +55,10 @@ class Deck:
 		# Draw a specified number of cards from deck
 		drawn = []
 		for i in range(num_cards):
-			logger.debug(self.deck.keys())
 			choice = random.choice(list(self.deck.keys()))
 			drawn.append(choice)
 		if len(drawn) == 1:
 			drawn = drawn[0]
-		logger.debug(drawn)
 		return drawn
 		
 	def count(self):
@@ -82,7 +80,7 @@ class Deck:
 					logger.exception(f"Something went wrong here {e=} ")
 				finally:
 					if crd_id in self.deck:
-						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
+						logger.debug(f"{playing_card} verified to be in the target deck, self.count + 1")
 						self.numCards += 1
 						assert len(self.deck) == self.count()
 						return True
