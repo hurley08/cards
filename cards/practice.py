@@ -11,11 +11,6 @@ import sys
 import time
 
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename="cards.log", filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
-stdout = logging.StreamHandler(stream=sys.stdout)
-
-
 
 '''
 def generate_std_deck(suits, faces):
@@ -84,12 +79,11 @@ class Game:
 	def __init__(self, Player1=None, Player2=None, Dealer=None):
 		# Initilize game objects (mostly decks)
 
-		self.dealer = Deck(name="Dealer")
-		self.dealer.generate_deck()
+		self.dealer = Deck(name=Dealer)
 		self.gameover = None
 		self.winner = None
-		self.p1 = Deck(name="Player1")
-		self.p2 = Deck(name="Player2")
+		self.p1 = Deck(name=Player1)
+		self.p2 = Deck(name=Player2)
 		self.p1.hand = None
 		self.p2.hand = None
 		self.p1_cards = self.p1.count()
@@ -98,16 +92,19 @@ class Game:
 		logger.success("Game object instantiated")
 		self.dealer.generate_deck()
 
-	def info(self, slp=5):
+		
+
+	def info(self, message=None, slp=5):
 		# Just to explain the rules of the game
-		message=((
-		"This game is called War."
-		" It begins with 2 players receiving half of the dealers deck"
-		" and ends when one of the players have no cards left to play."
-		" A card is drawn every round by each player. The player whose"
-		" card has the higher value gets to keep and shuffle both cards"
-		" into their deck"
-	))
+		if message == None:
+			message=((
+			"This game is called War."
+			" It begins with 2 players receiving half of the dealers deck"
+			" and ends when one of the players have no cards left to play."
+			" A card is drawn every round by each player. The player whose"
+			" card has the higher value gets to keep and shuffle both cards"
+			" into their deck"
+		))
 		logger.debug(f"Displaying game info {message} for {slp} seconds")
 		print(f"\n{message:}")
 		time.sleep(slp)
@@ -119,7 +116,7 @@ class Game:
 		count = self.dealer.count()
 		while count > 0:
 			for i in decks:
-				self.dealer.deal_card(1, i)
+				self.dealer.deal(1, i)
 			count = self.dealer.count()
 		logger.debug(f"{self.p1.count()=}, {self.p2.count()=}")
 
@@ -136,16 +133,16 @@ class Game:
 			time.sleep(.005)
 			for playr in self.players:
 				temp = playr.just_draw(1)
-				playr.hand = temp[0]
-			logger.debug(f"turn: {self.turn}, {self.p1.hand._face} of {self.p1.hand._suit}s ({self.p1.hand._id}) vs , {self.p2.hand._face} of {self.p2.hand._suit}s ({self.p2.hand._id})")
-			if self.p1.hand > self.p2.hand:
-				logger.info(f"{self.p1.hand._face} of {self.p1.hand._suit}s  is greater")
-				self.p1.add_card(self.p2.hand)
-				self.p2.remove_card(self.p2.hand)
+				playr.hand = (temp, playr.deck[temp])
+			logger.debug(f"turn: {self.turn}, {self.p1.hand[1]._face} of {self.p1.hand[1]._suit}s ({self.p1.hand[1]._id}) vs , {self.p2.hand[1]._face} of {self.p2.hand[1]._suit}s ({self.p2.hand[1]._id})")
+			if self.p1.hand[1] > self.p2.hand[1]:
+				logger.info(f"{self.p1.hand[1]._face} of {self.p1.hand[1]._suit}s  is greater")
+				self.p1.add_card(self.p2.hand[0], self.p2.hand[1])
+				self.p2.remove_card(self.p2.hand[0])
 			else:
-				logger.info(f"{self.p2.hand._face} of {self.p2.hand._suit}s is greater")
-				self.p2.add_card(self.p1.hand)
-				self.p1.remove_card(self.p1.hand)
+				logger.info(f"{self.p2.hand[1]._face} of {self.p2.hand[1]._suit}s is greater")
+				self.p2.add_card(self.p1.hand[0], self.p1.hand[1])
+				self.p1.remove_card(self.p1.hand[0])
 			
 			self.turn += 1 
 
@@ -176,8 +173,11 @@ if __name__ == "__main__":
 	logger.level("SUCCESS", color="<green>")
 	logger.level("ERROR", color="<red>")
 	logger.level("CRITICAL", color="<magenta")
-	game = Game()
-	game.info()
+	dealer = Deck(name="dealer")
+	p1 = Deck(name="P1")
+	p2 = Deck(name="P2")
+	game = Game(Player1="p1", Player2="p2", Dealer="dealer")
+	game.info(message=None, slp=2)
 	game.distribute_cards([game.p1, game.p2])
 	game.begin()
 

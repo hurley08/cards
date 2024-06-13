@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass 
 from cards.playing_card import PlayingCard
+from cards.tables import Tables
 from loguru import logger
 from cardExceptions import *
 import random
@@ -9,8 +10,6 @@ import copy
 import sys
 
 
-
-logger = logging.getLogger(__name__)
 
 tables = Tables()
 standard_deck = list(tables.rankings_single_level_dict.keys())
@@ -21,7 +20,7 @@ class Deck:
 	def __init__(self, name='default_name'):
 		self.deck = {}
 		self.name = name
-		self.count = 0
+		self.numCards = 0
 		self.hand = {}
 		self.graveyard = {}
 		logger.info("Deck class instantiated")
@@ -40,26 +39,33 @@ class Deck:
 		for i in this_deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
+		logger.debug("Generating Deck")
 		this_deck = []
-		randomized_index = random.sample(range(self.count+1,self.count+1+len(standard_deck)+1),len(standard_deck))
-		logger.debug("Temporary deck created")
+		randomized_index = random.sample(range(self.numCards+1,self.numCards+1+len(standard_deck)+1),len(standard_deck))
 		for index in range(len(standard_deck)):
-			i = standard_deck[index]
-			cId = randomized_index[index]
-			crd = PlayingCard(i[0],i[1])
-
-			self.add_card(crd_id=cId, playing_card=crd)	
-		logger.info("Deck has been generated")
+			i = standard_deck[index]					# Adds cards sequentially
+			cId = randomized_index[index]				# Assigning a random id between 0 and size of deck
+			crd = PlayingCard(i[0],i[1])				# Creates the PlayingCard object								
+			self.add_card(crd_id=cId, playing_card=crd)	# Adds to the self deck and uses random id as the key											
+		logger.info("Deck has been generated")		 	# This is to obfuscate the value of the card
 		logger.debug(self.deck)	
 
 
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
-
-		drawn = random.sample(range(1,len(self.deck)+1), num_cards)
+		drawn = []
+		for i in range(num_cards):
+			logger.debug(self.deck.keys())
+			choice = random.choice(list(self.deck.keys()))
+			drawn.append(choice)
+		if len(drawn) == 1:
+			drawn = drawn[0]
 		logger.debug(drawn)
 		return drawn
 		
+	def count(self):
+		# How many cards are in a deck
+		return len(self.deck)
 			
 
 	def add_card(self, crd_id=None, playing_card=None):
@@ -73,12 +79,12 @@ class Deck:
 					logger.info(f"A card was added to the deck")
 
 				except Exception as e:
-					logging.exception(f"Something went wrong here {e=} ")
+					logger.exception(f"Something went wrong here {e=} ")
 				finally:
 					if crd_id in self.deck:
 						logger.debug(f"{playing_card} verified to be in the deck self.count + 1")
-						self.count += 1
-						assert len(self.deck) != self.count
+						self.numCards += 1
+						assert len(self.deck) == self.count()
 						return True
 					else:
 						return False
@@ -92,12 +98,13 @@ class Deck:
 				obj = self.deck[crd_id]
 				self.graveyard[crd_id] = obj
 				self.deck.pop(crd_id)
-				logging.info(f"{crd_id=} was removed from deck")
-				self.count -= 1
+				self.numCards -= 1
+				logger.debug(f"{obj._suit=}, {obj._face=}")
+				logger.success(f"{crd_id=} was removed from deck")
 				return obj
 
 		except: 
-			logging.exception(DeckException("COULDN'T REMOVE MATE"))
+			logger.exception(DeckException("COULDN'T REMOVE MATE"))
 			return False
 
 	def add_joker(self, num_joker=0):
@@ -135,23 +142,24 @@ class Deck:
 
 	def deal(self, numCards=0, receiving_deck=None):
 		if numCards < 1:
-			logging.exception(CountException("Number of cards to distribute is required. "))
+			logger.exception(CountException("Number of cards to distribute is required. "))
 		if receiving_deck is None:
-			logging.exception(DeckException("A 'destination' deck was not specified"))
+			logger.exception(DeckException("A 'destination' deck was not specified"))
 		if isinstance(receiving_deck, Deck) is False:
-			logging.exception(DeckException("Something was wrong with the destination deck provided"))
+			logger.exception(DeckException("Something was wrong with the destination deck provided"))
 		backup_deck = copy.deepcopy(self.deck)
 		backup_rec_deck = copy.deepcopy(receiving_deck.deck)
+		for i in range(numCards):
 
-		try: 
-			drawn = self.just_draw(numCards)
-			for i in drawn:
-				receiving_deck.add_card(i, self.deck[i])
-				self.remove_card(i)
-		except:	
-			self.deck = backup_deck
-			receiving_deck.deck = backup_rec_deck
-			logging.exception(DeckException("Something went wrong womp womp"))
+			try: 
+				choice = random.choice(list(self.deck))
+				card = self.remove_card(choice)
+				receiving_deck.add_card(choice, card)
+				
+			except:	
+				self.deck = backup_deck
+				receiving_deck.deck = backup_rec_deck
+				logger.exception(DeckException("Something went wrong womp womp"))
 
 
 
