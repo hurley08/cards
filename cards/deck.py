@@ -2,16 +2,20 @@
 
 from dataclasses import dataclass 
 from cards.playing_card import PlayingCard
-from cards.tables import Tables
-from cards.cardExceptions import *
+from loguru import logger
+from cardExceptions import *
 import random
 import copy
-import logging
+import sys
+
+
 
 logger = logging.getLogger(__name__)
 
 tables = Tables()
 standard_deck = list(tables.rankings_single_level_dict.keys())
+
+
 
 class Deck:
 	def __init__(self, name='default_name'):
@@ -43,10 +47,11 @@ class Deck:
 			i = standard_deck[index]
 			cId = randomized_index[index]
 			crd = PlayingCard(i[0],i[1])
+
 			self.add_card(crd_id=cId, playing_card=crd)	
 		logger.info("Deck has been generated")
 		logger.debug(self.deck)	
-		
+
 
 	def just_draw(self, num_cards):
 		# Draw a specified number of cards from deck
