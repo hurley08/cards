@@ -1,16 +1,19 @@
 # cards/game_stats.py
 
-
 from cards.deck import Deck 
 from cards.tables import Tables
 import pandas as pd
+from loguru import logger
+import time
 
 
 t = Tables().rankings_single_level_dict
 
 class Stats:
 
-	def __init__(self, draws=1000, verbosity=True):
+	def __init__(self, draws=10000, verbosity=True):
+		self.info()
+		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0
 		self.limit = draws
 		self.dealer = Deck(name="House")
@@ -21,7 +24,22 @@ class Stats:
 		for i in list(t):
 			self.stats[i] = 0 
 
+	def info(self, message=None, slp=5):
+		# Just to explain the rules of the game
+		if message == None:
+			message=((
+			"This game is called Stats."
+			" The dealer will draw the number of "
+			" cards specified by draws and perform"
+			" statistical analysis on the results"
+		))
+		logger.debug(f"Displaying game info {message} for {slp} seconds")
+		print(f"\n{message:}")
+		time.sleep(slp)
+
+
 	def begin(self):
+		logger.info(f"The draws will begin now")
 		self.dealer.generate_deck()
 		for i in range(self.limit):
 			if self.count % 10 == 0:
@@ -55,7 +73,3 @@ class Stats:
 		return df 
 
 
-g = Stats()
-g.begin()
-gg = g.results()
-ggg = g.df()

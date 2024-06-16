@@ -2,9 +2,12 @@
  
 from cards.deck import Deck
 from cards.playing_card import PlayingCard, suits, faces
+from cards.game_stats import Stats
+from cardExceptions import *
+
+
 from loguru import logger
 from dataclasses import dataclass
-from cardExceptions import *
 
 import random
 import sys
@@ -120,6 +123,11 @@ if __name__ == "__main__":
 	game.distribute_cards([game.p1, game.p2])
 	game.begin()
 
+
+	game2 = Stats()
+	game2.begin()
+	res = game2.results()
+	df = game2.df()
 
 
 
