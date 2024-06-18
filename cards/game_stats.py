@@ -2,8 +2,9 @@
 
 from cards.deck import Deck 
 from cards.tables import Tables
-import pandas as pd
 from loguru import logger
+import pandas as pd
+
 import time
 
 
@@ -11,7 +12,8 @@ t = Tables().rankings_single_level_dict
 
 class Stats:
 
-	def __init__(self, draws=10000, verbosity=False):
+	def __init__(self, draws=100, verbosity=False):
+		# Verbosity is currently not implemented
 		self.info()
 		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0
@@ -39,6 +41,7 @@ class Stats:
 
 
 	def begin(self):
+		# Begins drawing and logging
 		logger.info("The draws will begin now")
 		self.dealer.generate_deck()
 		for i in range(self.limit):
@@ -57,7 +60,7 @@ class Stats:
 
 
 	def results(self):
-
+		# Calculate the percent draw of each of the 52 cards
 		self.stats.values()
 		for i in self.stats:
 			self.stats[i] = {self.stats[i]:self.stats[i]/self.limit}
@@ -67,18 +70,27 @@ class Stats:
 
 
 	def df(self):
-		
-		df = pd.DataFrame(self.stats.items())
+		# Generate a dataframe object from which more stats may be derived
+		df = pd.DataFrame(self.stats.keys())
+		df2 = pd.DataFrame(self.stats.items())
 		
 		pcnt = []
 		freq = []
-		for i in df[1]:
+		for i in df2[1]:
 			pcnt.append(list(i.values())[0])
 			freq.append(list(i.keys())[0])
-		df.columns = ["card", "int"]
-		df.drop(columns=["int"])
+		df.columns = ["suit", "face"]
+		print(df)
+		df.drop(columns=["int"], axis=1)
 		df['freq'] = pd.DataFrame(freq)
 		df['pcnt'] = pd.DataFrame(pcnt)
 		return df 
 
+
+'''
+add probability for a suit to be drawn (1/4)
+add probability for a face to be drawn (4/52)
+add probability for an even or odd card (1/2)
+
+'''
 

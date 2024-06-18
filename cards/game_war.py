@@ -1,10 +1,8 @@
+#cards/game_war.py
+
 from cards.deck import Deck
-from cards.playing_card import PlayingCard
-
-
 from loguru import logger
 
-import sys
 import time
 
 class War:
@@ -57,12 +55,13 @@ class War:
 		logger.debug(f"{self.p1.count()=}, {self.p2.count()=}")
 
 
-	def begin(self):
+	def begin(self, rounds=1):
 		# Loops until one of the players have 0 cards
 
 		self.gameover = False
 		self.winner = False
 		self.turn = 0
+		self.rounds = rounds
 		logger.info("The game has begun")
 
 		while (self.p1.count() > 0 and self.p2.count() > 0):

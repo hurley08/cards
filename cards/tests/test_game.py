@@ -1,17 +1,10 @@
 # cards/test/test_game.py
 
-
-import cards.deck as Deck
 import pytest
-from cards.deck import Deck
-from cards.playing_card import PlayingCard
-from cards.cardExceptions import DeckException, CardNotViewable
-from cards.practice import Game
-from cards.game_stats import Stats 
 
 @pytest.fixture
-def test_war_fixt(Game):
-	gam = Game()
+def test_war_fixt(War):
+	gam = War()
 	gam.info()
 	return gam
 

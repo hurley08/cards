@@ -8,7 +8,6 @@ from cards.game_war import War
 from loguru import logger
 
 import sys
-import time
 '''
 class Game:
 	# Class to manage objects and rules 
