@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from cards.tables import Tables
 from loguru import logger
-from cardExceptions import DeckException, CardNotViewable
+from cards.cardExceptions import DeckException, CardNotViewable
 table = Tables().rankings_single_level_dict
 
 

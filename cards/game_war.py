@@ -1,16 +1,13 @@
-# cards/practice.py
- 
 from cards.deck import Deck
-from cards.game_stats import Stats
-from cards.game_war import War
+from cards.playing_card import PlayingCard
 
 
 from loguru import logger
 
 import sys
 import time
-'''
-class Game:
+
+class War:
 	# Class to manage objects and rules 
 
 	def __init__(self, Player1=None, Player2=None, Dealer=None):
@@ -99,106 +96,3 @@ class Game:
 		self.p1_cards = self.p1.count()
 		self.p2_cards = self.p2.count()
 		logger.debug(f"Counts updated | \t p1: {pre1} >> {self.p1_cards}, p2: {pre2} >> {self.p2_cards}")
-'''
-
-
-if __name__ == "__main__": 
-
-	logger.remove()
-	logger.add(sys.stderr, colorize=True, format="{time:MM-DD-YYYY HH:mm:X} [{level}] {message}", diagnose=False)
-	#logger.add("{time:YYYY-MM-DD}.log", diagnose=False, csolorize=None)
-	logger.success("Successfully changed format")
-	logger.level("DEBUG", color="<blue>")
-	logger.level("INFO", color="<white>")
-	logger.level("SUCCESS", color="<green>")
-	logger.level("ERROR", color="<red>")
-	logger.level("CRITICAL", color="<magenta")
-	dealer = Deck(name="dealer")
-	p1 = Deck(name="P1")
-	p2 = Deck(name="P2")
-	game = War(Player1="p1", Player2="p2", Dealer="dealer")
-	game.info(message=None, slp=2)
-	game.distribute_cards([game.p1, game.p2])
-	game.begin()
-
-
-	game2 = Stats()
-	game2.begin()
-	res = game2.results()
-
-	print(f"\n{game2.limit} draws were used to create the table below")
-
-	df = game2.df()
-	df.drop(columns=['int'])
-	print(df)
-	print("Maximum: \n",df.loc[df['pcnt'].idxmax()])
-	print("\nMinimum: \n", df.loc[df['pcnt'].idxmin()])
-	print(f"\n{df['pcnt'].mean()=}, {df['pcnt'].median()=}, {df['pcnt'].mode()=}")
-	
-
-'''
-
-The following lines of code sat at the top of this file.
-
-I'll eventually take a look at whether this is going to be useful for future work or not
-
-
-def generate_std_deck(suits, faces):
-	std_deck = []
-	for i in suits:
-		for j in faces:
-			tup =f"('{i}', '{j}')"
-			std_deck.append(tup)
-<<<<<<< HEAD
-=======
-			logging.debug(tup,',')
->>>>>>> main
-	return std_deck
-
-
-
-<<<<<<< HEAD
-def distribute_to_players(decks):
-
-
-	count = d.count()
-=======
-def seq():
-	d = Deck(name="Ron")
-	d.generate_deck
-	d2 = Deck(name="Player2")
-	tw = d.just_draw(3)
-	for i in tw:
-		d.remove_card(i)
-
-
-d = Deck(name="Dealer")
-d.generate_deck()
-#print(d.deck)
-#print(d.binned())
-#
-# print(d.count)
-#L = d.binned(["Hearts"])
-#for i in L:
-#	print(i)
-	#print(L[i], '\n')
-
-
-d1 = Deck(name="Player1")
-d2 = Deck(name="Player2")
-#d.deal_card(d.count()/2,d1)
-#d.deal_card(d.count(), d2)
-d1.count
-d2.count
-
-
-
-def distribute_to_players(decks):
-	count = d.count
->>>>>>> main
-	while count >= 1:
-		for i in decks:
-			d.deal(1, i)
-		count = d.count
-
-'''

@@ -11,7 +11,7 @@ t = Tables().rankings_single_level_dict
 
 class Stats:
 
-	def __init__(self, draws=10000, verbosity=True):
+	def __init__(self, draws=10000, verbosity=False):
 		self.info()
 		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0

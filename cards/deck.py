@@ -3,7 +3,7 @@
 from cards.playing_card import PlayingCard
 from cards.tables import Tables
 from loguru import logger
-from cardExceptions import DeckException, CountException
+from cards.cardExceptions import DeckException, CountException
 import random
 import copy
 
