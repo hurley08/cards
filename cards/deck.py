@@ -1,13 +1,11 @@
 #cards/deck.py
 
-from dataclasses import dataclass 
 from cards.playing_card import PlayingCard
 from cards.tables import Tables
 from loguru import logger
-from cardExceptions import *
+from cardExceptions import DeckException, CountException
 import random
 import copy
-import sys
 
 
 
@@ -40,7 +38,6 @@ class Deck:
 			self.deck[(this_deck[i].suit, this_deck[i].face)] = this_deck[i].id
 		'''
 		logger.debug("Generating Deck")
-		this_deck = []
 		randomized_index = random.sample(range(self.numCards+1,self.numCards+1+len(standard_deck)+1),len(standard_deck))
 		for index in range(len(standard_deck)):
 			i = standard_deck[index]					# Adds cards sequentially
@@ -71,10 +68,10 @@ class Deck:
 		# Adds to deck first by default
 
 		if (playing_card and crd_id) is not None:
-			if isinstance(playing_card, PlayingCard) == True:
+			if isinstance(playing_card, PlayingCard) is True:
 				try:	
 					self.deck[crd_id] = playing_card
-					logger.info(f"A card was added to the deck")
+					logger.info("A card was added to the deck")
 
 				except Exception as e:
 					logger.exception(f"Something went wrong here {e=} ")
@@ -101,7 +98,7 @@ class Deck:
 				logger.success(f"{crd_id=} was removed from deck")
 				return obj
 
-		except: 
+		except DeckException: 
 			logger.exception(DeckException("COULDN'T REMOVE MATE"))
 			return False
 
@@ -123,12 +120,6 @@ class Deck:
 		# Bins cards for analysis. Should typically be disabled
 	
 		self.count
-		bins = {
-			"Club": {},
-			"Diamond": {},
-			"Heart": {},
-			"Spade": {},
-		}
 		print("this was broken by introduction of face up concept")
 		'''
 		for card in self.deck:
@@ -154,7 +145,7 @@ class Deck:
 				card = self.remove_card(choice)
 				receiving_deck.add_card(choice, card)
 				
-			except:	
+			except DeckException:	
 				self.deck = backup_deck
 				receiving_deck.deck = backup_rec_deck
 				logger.exception(DeckException("Something went wrong womp womp"))

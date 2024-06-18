@@ -1,15 +1,11 @@
 # cards/practice.py
  
 from cards.deck import Deck
-from cards.playing_card import PlayingCard, suits, faces
 from cards.game_stats import Stats
-from cardExceptions import *
 
 
 from loguru import logger
-from dataclasses import dataclass
 
-import random
 import sys
 import time
 
@@ -37,7 +33,7 @@ class Game:
 	def info(self, message=None, slp=5):
 		# Just to explain the rules of the game
 
-		if message == None:
+		if message is None:
 			message=((
 			"This game is called War."
 			" It begins with 2 players receiving half of the dealers deck"
@@ -92,7 +88,7 @@ class Game:
 		self.gameover = True
 		self.winner = self.p1 if self.p1_cards > self.p2_cards else self.p2
 		logger.success(f"{self.winner.name=} won in {self.turn} turns")
-		print(f"\nwinner: ", self.winner.name, "\nturn: ", self.turn)
+		print("\nwinner: ", self.winner.name, "\nturn: ", self.turn)
 
 
 	def update_counts(self):
@@ -131,6 +127,8 @@ if __name__ == "__main__":
 	print(f"\n{game2.limit} draws were used to create the table below")
 
 	df = game2.df()
+	df.drop(columns=['int'])
+	print(df)
 	print("Maximum: \n",df.loc[df['pcnt'].idxmax()])
 	print("\nMinimum: \n", df.loc[df['pcnt'].idxmin()])
 	print(f"\n{df['pcnt'].mean()=}, {df['pcnt'].median()=}, {df['pcnt'].mode()=}")

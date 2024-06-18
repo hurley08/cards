@@ -26,7 +26,7 @@ class Stats:
 
 	def info(self, message=None, slp=5):
 		# Just to explain the rules of the game
-		if message == None:
+		if message is None:
 			message=((
 			"This game is called Stats."
 			" The dealer will draw the number of "
@@ -39,7 +39,7 @@ class Stats:
 
 
 	def begin(self):
-		logger.info(f"The draws will begin now")
+		logger.info("The draws will begin now")
 		self.dealer.generate_deck()
 		for i in range(self.limit):
 			if self.count % 10 == 0:
@@ -58,7 +58,7 @@ class Stats:
 
 	def results(self):
 
-		vals = self.stats.values()
+		self.stats.values()
 		for i in self.stats:
 			self.stats[i] = {self.stats[i]:self.stats[i]/self.limit}
 		print(self.stats)

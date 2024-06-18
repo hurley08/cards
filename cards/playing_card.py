@@ -1,9 +1,9 @@
 # cards/cards.py
 
 from dataclasses import dataclass
-from cards import cardExceptions
 from cards.tables import Tables
 from loguru import logger
+from cardExceptions import DeckException, CardNotViewable
 table = Tables().rankings_single_level_dict
 
 
@@ -54,7 +54,7 @@ class PlayingCard:
                 table = Tables().rankings_single_level_dict
             logger.success("Rankings table retrieved")
         except Exception as e:
-            logger.error(f"Something's wrong")
+            logger.error("Something's wrong")
             logger.debug(e)
         return table
 
@@ -100,7 +100,7 @@ class PlayingCard:
         return False
 
         # Reveals the card if it is face up
-        logging.debug(f"Show card {self.face_up=}, {self.in_hand=}]")
+        logger.debug(f"Show card {self.face_up=}, {self.in_hand=}]")
         if self.face_up is False or self.in_hand is False:
             return self.suit, self.face
 
