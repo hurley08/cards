@@ -115,21 +115,26 @@ if __name__ == "__main__":
 	logger.level("SUCCESS", color="<green>")
 	logger.level("ERROR", color="<red>")
 	logger.level("CRITICAL", color="<magenta")
-	dealer = Deck(name="dealer")
-	p1 = Deck(name="P1")
-	p2 = Deck(name="P2")
-	game = Game(Player1="p1", Player2="p2", Dealer="dealer")
-	game.info(message=None, slp=2)
-	game.distribute_cards([game.p1, game.p2])
-	game.begin()
+	#dealer = Deck(name="dealer")
+	#p1 = Deck(name="P1")
+	#p2 = Deck(name="P2")
+	#game = Game(Player1="p1", Player2="p2", Dealer="dealer")
+	#game.info(message=None, slp=2)
+	#game.distribute_cards([game.p1, game.p2])
+	#game.begin()
 
 
 	game2 = Stats()
 	game2.begin()
 	res = game2.results()
+
+	print(f"\n{game2.limit} draws were used to create the table below")
+
 	df = game2.df()
-
-
+	print("Maximum: \n",df.loc[df['pcnt'].idxmax()])
+	print("\nMinimum: \n", df.loc[df['pcnt'].idxmin()])
+	print(f"\n{df['pcnt'].mean()=}, {df['pcnt'].median()=}, {df['pcnt'].mode()=}")
+	
 
 '''
 

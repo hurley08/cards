@@ -58,7 +58,6 @@ class Stats:
 
 	def results(self):
 
-
 		vals = self.stats.values()
 		for i in self.stats:
 			self.stats[i] = {self.stats[i]:self.stats[i]/self.limit}
@@ -66,10 +65,20 @@ class Stats:
 		print(self.history)
 		return self.stats
 
+
 	def df(self):
+		
 		df = pd.DataFrame(self.stats.items())
+		
+		pcnt = []
+		freq = []
+		for i in df[1]:
+			pcnt.append(list(i.values())[0])
+			freq.append(list(i.keys())[0])
 		df.columns = ["card", "int"]
-		df[['freq'],['intern']] = pd.DataFrame(df['int'].tolist(), index=df.index)
+		df.drop(columns=["int"])
+		df['freq'] = pd.DataFrame(freq)
+		df['pcnt'] = pd.DataFrame(pcnt)
 		return df 
 
 
