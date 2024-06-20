@@ -9,12 +9,7 @@ from cards.game_stats import Stats
 
 @pytest.fixture
 def test_war_fixt():
-	try: 
-		gam = War()
-	except:
-		print(War.__file__)
-	gam = War
-	gam = gam()
+	gam = War()
 	return gam
 
 @pytest.fixture
