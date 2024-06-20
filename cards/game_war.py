@@ -22,7 +22,7 @@ class War:
 		self.p2_cards = self.p2.count()
 		self.players = [self.p1, self.p2]
 		logger.success("Game object instantiated")
-		self.dealer.generate_deck()
+		
 
 		
 
@@ -57,7 +57,7 @@ class War:
 
 	def begin(self, rounds=1):
 		# Loops until one of the players have 0 cards
-
+		self.dealer.generate_deck()
 		self.gameover = False
 		self.winner = False
 		self.turn = 0

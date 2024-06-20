@@ -14,7 +14,7 @@ class Stats:
 
 	def __init__(self, draws=100, verbosity=False):
 		# Verbosity is currently not implemented
-		self.info()
+		self.info(slp=2)
 		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0
 		self.limit = draws
@@ -80,10 +80,8 @@ class Stats:
 			pcnt.append(list(i.values())[0])
 			freq.append(list(i.keys())[0])
 		df.columns = ["suit", "face"]
-		print(df)
-		df.drop(columns=["int"], axis=1)
 		df['freq'] = pd.DataFrame(freq)
-		df['pcnt'] = pd.DataFrame(pcnt)
+		df['%'] = pd.DataFrame(pcnt)
 		return df 
 
 

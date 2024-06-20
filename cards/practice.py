@@ -121,18 +121,17 @@ if __name__ == "__main__":
 	game.begin()
 
 
-	game2 = Stats()
+	game2 = Stats(draws=10000)
 	game2.begin()
 	res = game2.results()
 
 	print(f"\n{game2.limit} draws were used to create the table below")
 
 	df = game2.df()
-	df.drop(columns=['int'])
 	print(df)
-	print("Maximum: \n",df.loc[df['pcnt'].idxmax()])
-	print("\nMinimum: \n", df.loc[df['pcnt'].idxmin()])
-	print(f"\n{df['pcnt'].mean()=}, {df['pcnt'].median()=}, {df['pcnt'].mode()=}")
+	print("Maximum: \n",df.loc[df['%'].idxmax()])
+	print("\nMinimum: \n", df.loc[df['%'].idxmin()])
+	print(f"\n{df['%'].mean()=}, {df['%'].median()=}, {df['%'].mode()=}")
 	
 
 '''

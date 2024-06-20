@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.fixture
-def test_game_fixt(Game):
+def test_game_fixt():
 	gam = Game()
 	gam.info()
 	return gam
