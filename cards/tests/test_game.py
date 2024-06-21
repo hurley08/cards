@@ -6,7 +6,6 @@ from  cards.game_war import War
 
 from cards.game_stats import Stats
 
-
 @pytest.fixture
 def test_war_fixt():
 	gam = War()

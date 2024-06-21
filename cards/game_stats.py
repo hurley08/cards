@@ -12,8 +12,10 @@ t = Tables().rankings_single_level_dict
 
 class Stats:
 
+
 	def __init__(self, draws=100, verbosity=False):
 		# Verbosity is currently not implemented
+b6c45f (Fixed df output. Ruff'd)
 		self.info(slp=2)
 		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0
@@ -71,9 +73,9 @@ class Stats:
 
 	def df(self):
 		# Generate a dataframe object from which more stats may be derived
+		
 		df = pd.DataFrame(self.stats.keys())
 		df2 = pd.DataFrame(self.stats.items())
-		
 		pcnt = []
 		freq = []
 		for i in df2[1]:
