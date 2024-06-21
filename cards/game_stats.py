@@ -15,7 +15,6 @@ class Stats:
 
 	def __init__(self, draws=100, verbosity=False):
 		# Verbosity is currently not implemented
-b6c45f (Fixed df output. Ruff'd)
 		self.info(slp=2)
 		logger.info(f"Stats for {draws=} has been initiated")
 		self.count = 0
